@@ -6,21 +6,21 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <h2>Welcome to the Books Page</h2>
+    <h2>Welcome to the tweets Page</h2>
 
     <p>{{ message }}</p>
 
-    {% if books %}
+    {% if tweets %}
         <ul>
-        {% for book in books %}
-            <li>{{ book["title"] }}</li>
+        {% for tweet in tweets %}
+            <li>{{ tweet["tweet"] }}</li>
         {% endfor %}
         </ul>
 
     {% else %}
-        <p>Books not found.</p>
+        <p>tweets not found.</p>
     {% endif %}
 
+    
 </body>
 </html>
