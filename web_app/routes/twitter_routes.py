@@ -9,7 +9,7 @@ twitter_routes = Blueprint("twitter_routes", __name__)
 def get_user(screen_name=None):
     print(screen_name)
     twitter_user = twitter_api_client.get_user(screen_name)
-    statuses = twitter_api_client.user_timeline(screen_name, tweet_mode="extended", count=150)
+    statuses = twitter_api_client.user_timeline(screen_name, tweet_mode="extended", count=150, exclude_replies=True, include_rts=False)
     print("STATUSES COUNT:", len(statuses))
     #return jsonify({"user": user._json, "tweets": [s._json for s in statuses]})
     # get existing user from the db or initialize a new one:
@@ -30,7 +30,7 @@ def get_user(screen_name=None):
         print(status.full_text)
         print("----")
         # get existing tweet from the db or initialize a new one:
-        db_tweet = Tweet.query.get(status.id) or Tweet(id=status.id)
+        db_tweet = Tweets.query.get(status.id) or Tweets(id=status.id)
         db_tweet.user_id = status.author.id # or db_user.id
         db_tweet.full_text = status.full_text
         embedding = embeddings[counter]
@@ -39,6 +39,6 @@ def get_user(screen_name=None):
         db.session.add(db_tweet)
         counter+=1
     db.session.commit()
-    #return "OK"
-    return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
+    return "OK"
+    #return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
 
