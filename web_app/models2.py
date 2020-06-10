@@ -6,12 +6,28 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 class Tweet(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     tweet = db.Column(db.String(128))
-    user_name = db.Column(db.String(128))
+    name = db.Column(db.String(128))
 
-    def __repr__(self):
-        return f"<Tweet {self.user_id} {self.tweet} {self.user_name}>"
+class User(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    screen_name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String)
+    location = db.Column(db.String)
+    followers_count = db.Column(db.Integer)
+    #latest_tweet_id = db.Column(db.BigInteger)
+
+class Tweets(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    user_id = db.Column(db.BigInteger, db.ForeignKey("user.id"))
+    #full_text = db.Column(db.String(500))
+    embedding = db.Column(db.PickleType)
+
+    user = db.relationship("User", backref=db.backref("tweets", lazy=True))    
+
+    #def __repr__(self):
+        #return f"<Tweet {self.id} {self.tweet} {self.name}>"
     
 def parse_records(database_records):
     """
@@ -24,8 +40,8 @@ def parse_records(database_records):
     Returns: a list of dictionaries, each corresponding to a record, like...
         [
             tweets = [
-        {"user_id": 1, "tweet": "Tweet 1", "user_name":"Jeff"},
-        {"user_id": 2, "tweet": "Tweet 2", "user_name":"Elon"},
+        {"id": 1, "tweet": "Tweet 1", "name":"Jeff"},
+        {"id": 2, "tweet": "Tweet 2", "name":"Elon"},
     ]
         ]
     """
